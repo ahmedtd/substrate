@@ -36,10 +36,14 @@ const (
 )
 
 // The unified configuration object for ate-api-server.
+//
+// Rules: If you include your configuration setting in the config file, it
+// *must* be hot-reloadable using apiconfig.Loader.
 type APIConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Authentication configuration for users calling the Substrate APIs.
 	Authentication *APIClientAuthentication `protobuf:"bytes,1,opt,name=authentication,proto3" json:"authentication,omitempty"`
+	Logging        *APILogging              `protobuf:"bytes,2,opt,name=logging,proto3" json:"logging,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -77,6 +81,13 @@ func (*APIConfig) Descriptor() ([]byte, []int) {
 func (x *APIConfig) GetAuthentication() *APIClientAuthentication {
 	if x != nil {
 		return x.Authentication
+	}
+	return nil
+}
+
+func (x *APIConfig) GetLogging() *APILogging {
+	if x != nil {
+		return x.Logging
 	}
 	return nil
 }
@@ -201,13 +212,59 @@ func (x *TrustedJWTIssuer) GetDiscoveryTokenFile() string {
 	return ""
 }
 
+type APILogging struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// debug, info, warn, or error
+	Level         string `protobuf:"bytes,1,opt,name=level,proto3" json:"level,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *APILogging) Reset() {
+	*x = APILogging{}
+	mi := &file_apiconfig_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *APILogging) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*APILogging) ProtoMessage() {}
+
+func (x *APILogging) ProtoReflect() protoreflect.Message {
+	mi := &file_apiconfig_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use APILogging.ProtoReflect.Descriptor instead.
+func (*APILogging) Descriptor() ([]byte, []int) {
+	return file_apiconfig_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *APILogging) GetLevel() string {
+	if x != nil {
+		return x.Level
+	}
+	return ""
+}
+
 var File_apiconfig_proto protoreflect.FileDescriptor
 
 const file_apiconfig_proto_rawDesc = "" +
 	"\n" +
-	"\x0fapiconfig.proto\x12\vateconfigpb\"Y\n" +
+	"\x0fapiconfig.proto\x12\vateconfigpb\"\x8c\x01\n" +
 	"\tAPIConfig\x12L\n" +
-	"\x0eauthentication\x18\x01 \x01(\v2$.ateconfigpb.APIClientAuthenticationR\x0eauthentication\"h\n" +
+	"\x0eauthentication\x18\x01 \x01(\v2$.ateconfigpb.APIClientAuthenticationR\x0eauthentication\x121\n" +
+	"\alogging\x18\x02 \x01(\v2\x17.ateconfigpb.APILoggingR\alogging\"h\n" +
 	"\x17APIClientAuthentication\x12M\n" +
 	"\x13trusted_jwt_issuers\x18\x01 \x03(\v2\x1d.ateconfigpb.TrustedJWTIssuerR\x11trustedJwtIssuers\"\xec\x01\n" +
 	"\x10TrustedJWTIssuer\x12\x12\n" +
@@ -215,7 +272,10 @@ const file_apiconfig_proto_rawDesc = "" +
 	"\x0etrusted_issuer\x18\x02 \x01(\tR\rtrustedIssuer\x12-\n" +
 	"\x12required_audiences\x18\x03 \x03(\tR\x11requiredAudiences\x12<\n" +
 	"\x1acertificate_authority_file\x18\x04 \x01(\tR\x18certificateAuthorityFile\x120\n" +
-	"\x14discovery_token_file\x18\x05 \x01(\tR\x12discoveryTokenFileB2Z0github.com/agent-substrate/pkg/proto/ateconfigpbb\x06proto3"
+	"\x14discovery_token_file\x18\x05 \x01(\tR\x12discoveryTokenFile\"\"\n" +
+	"\n" +
+	"APILogging\x12\x14\n" +
+	"\x05level\x18\x01 \x01(\tR\x05levelB2Z0github.com/agent-substrate/pkg/proto/ateconfigpbb\x06proto3"
 
 var (
 	file_apiconfig_proto_rawDescOnce sync.Once
@@ -229,20 +289,22 @@ func file_apiconfig_proto_rawDescGZIP() []byte {
 	return file_apiconfig_proto_rawDescData
 }
 
-var file_apiconfig_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_apiconfig_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_apiconfig_proto_goTypes = []any{
 	(*APIConfig)(nil),               // 0: ateconfigpb.APIConfig
 	(*APIClientAuthentication)(nil), // 1: ateconfigpb.APIClientAuthentication
 	(*TrustedJWTIssuer)(nil),        // 2: ateconfigpb.TrustedJWTIssuer
+	(*APILogging)(nil),              // 3: ateconfigpb.APILogging
 }
 var file_apiconfig_proto_depIdxs = []int32{
 	1, // 0: ateconfigpb.APIConfig.authentication:type_name -> ateconfigpb.APIClientAuthentication
-	2, // 1: ateconfigpb.APIClientAuthentication.trusted_jwt_issuers:type_name -> ateconfigpb.TrustedJWTIssuer
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	3, // 1: ateconfigpb.APIConfig.logging:type_name -> ateconfigpb.APILogging
+	2, // 2: ateconfigpb.APIClientAuthentication.trusted_jwt_issuers:type_name -> ateconfigpb.TrustedJWTIssuer
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_apiconfig_proto_init() }
@@ -256,7 +318,7 @@ func file_apiconfig_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_apiconfig_proto_rawDesc), len(file_apiconfig_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

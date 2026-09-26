@@ -19,9 +19,14 @@ package ateconfigpb;
 option go_package = "github.com/agent-substrate/pkg/proto/ateconfigpb";
 
 // The unified configuration object for ate-api-server.
+//
+// Rules: If you include your configuration setting in the config file, it
+// *must* be hot-reloadable using apiconfig.Loader.
 message APIConfig {
     // Authentication configuration for users calling the Substrate APIs.
     APIClientAuthentication authentication = 1;
+
+    APILogging logging = 2;
 
     // TODO(unifiedconfig): Handle most flags that ate-api-server accepts.
     //
@@ -50,5 +55,10 @@ message TrustedJWTIssuer {
     repeated string required_audiences = 3;
     string certificate_authority_file = 4;
     string discovery_token_file = 5;
+}
+
+message APILogging {
+    // debug, info, warn, or error
+    string level = 1;
 }
 
